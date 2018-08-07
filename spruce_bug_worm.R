@@ -28,19 +28,43 @@ solworms <- function(r, k) {
     return(list(roots = roots, types = solTypes))
 }
 
-solworms(0.5, 8)
+eqworms <- png::readPNG('worms_eq.png')
 
-r <- 0.5
+npar <- 100
+rr <- seq(0.1, 0.65, length.out = npar)
 k <- 8
 
-par(mfrow = 2:1, mar = c(1, 3, 0, 0) + 0.5, oma = c(2, 0, 0, 0), mgp = c(2, 0.5, 0))
+for(i in 1:npar) {
+    sol <- solworms(rr[i], k)
+    
+    png(paste0('temp/frame_', paste0(rep(0, nchar(as.character(npar)) - nchar(as.character(i))), collapse = ''), 
+              i, '.png', collapse = ''))
+    
+    layout(matrix(1:3, nrow = 3), heights = c(1, 3, 3))
+    
+    par(oma = c(3, 0.5, 0, 0), mar = c(0.5, 1.5, 0.75, 0.5), cex.lab = 1.5, cex.axis = 1.6, 
+        mgp = c(2, 1, 0), tck = -0.03)
+    
+    plot(1, xlim = 0:1, ylim = 0:1, xaxs = 'i', yaxs = 'i', type = 'n', axes = FALSE)
+    rasterImage(eqworms, 0.2, 0, 0.8, 1)
+    
+    par(mar = c(2.5, 2.5, 0.5, 0.5))
+    
+    curve(dwormst1(x, rr[i], k), from = 0, to = 8, col = 'red', 
+          xlab = '', ylab = '', ylim = c(0, 0.65))
+    curve(dwormst2(x, rr[i], k), col = 'blue', add = TRUE)
+    points(sol$roots, dwormst1(sol$roots, rr[i], k), pch = c(16, 21)[(sol$types == -1) + 1], bg = 'white', cex = 2)
+    
+    curve(dworms(x, rr[i], k), from = 0, to = 8, xlab = '', ylab = '', 
+          ylim = c(-0.5, 0.5))
+    abline(h = 0, lty = 2)
+    
+    points(sol$roots, dworms(sol$roots, rr[i], k), pch = c(16, 21)[(sol$types == -1) + 1], bg = 'white', cex = 2)
+    
+    mtext('Population size', side = 1, outer = TRUE, line = 1)
+    
+    dev.off()
+}
 
-curve(dwormst1(x, r, k), from = 0, to = 8, col = 'red', frame.plot = FALSE, 
-      xlab = '', ylab = '')
-curve(dwormst2(x, r, k), col = 'blue', add = TRUE)
-
-curve(dworms(x, 0.5, 8), from = 0, to = 8, xlab = 'Population size', ylab = expression(dN/dt), 
-      frame.plot = FALSE, ylim = c(-1, 0.5))
-abline(h = 0, lty = 2)
-
-mtext('Population size', side = 1, outer = TRUE, line = 0.5)
+## make gif using ImageMagick
+system('convert temp/*.png -delay 3 -loop 0 budworm_dynamics.gif')
