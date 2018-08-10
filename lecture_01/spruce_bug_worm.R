@@ -61,7 +61,7 @@ for(i in 1:npar) {
     
     points(sol$roots, dworms(sol$roots, rr[i], k), pch = c(16, 21)[(sol$types == -1) + 1], bg = 'white', cex = 2)
     
-    mtext('Population size', side = 1, outer = TRUE, line = 1)
+    mtext('Population size (N)', side = 1, outer = TRUE, line = 1)
     
     dev.off()
 }
