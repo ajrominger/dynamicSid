@@ -31,6 +31,34 @@ solworms <- function(r, k) {
     return(list(roots = roots, types = solTypes))
 }
 
+
+# second deriv wrt n
+d2worms <- function(n, r, k) {
+    t1 <- 1 + n^2
+    t2 <- r * (1 - n/k) - n/t1
+    
+    t2 - n * (r * (1/k) + (1/t1 - n * (2 * n)/t1^2))
+}
+
+# function to find bifurcation points near `ninit` and `rinit`
+bifurworms <- function(ninit, rinit, k) {
+    f <- function(p) {
+        c(dworms(p[1], p[2], k)^2, d2worms(p[1], p[2], k)^2)
+    }
+    
+    s <- gsl::multimin.init(c(nrange, rrange), f, method = 'nm')
+    for(i in 1:200) {
+        s <- multimin.iterate(s)
+        if(s$f <= .Machine$double.eps^0.5) break
+    }
+    
+    if(i == 200) warning('did not converge')
+    
+    return(s$x)
+}
+
+bifurworms(4, 0.466, k)
+
 # read in latex-generated eqs
 eqworms <- png::readPNG('lecture_01/worms_eq.png')
 eqK <- png::readPNG('lecture_01/k.png')
@@ -38,7 +66,7 @@ eqr <- png::readPNG('lecture_01/r.png')
 
 # control parameters for computation
 npar <- 200
-rr <- seq(0.2, 0.6, length.out = npar)
+rr <- seq(0.2, 0.65, length.out = npar)
 k <- 8
 
 # object to hold solutions across values of `rr`
