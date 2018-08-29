@@ -46,13 +46,7 @@ bifurworms <- function(ninit, rinit, k) {
         c(dworms(p[1], p[2], k)^2, d2worms(p[1], p[2], k)^2)
     }
     
-    s <- gsl::multimin.init(c(nrange, rrange), f, method = 'nm')
-    for(i in 1:200) {
-        s <- multimin.iterate(s)
-        if(s$f <= .Machine$double.eps^0.5) break
-    }
-    
-    if(i == 200) warning('did not converge')
+    s <- nleqslv::nleqslv(c(ninit, rinit), f)
     
     return(s$x)
 }
@@ -66,7 +60,7 @@ eqr <- png::readPNG('lecture_01/r.png')
 
 # control parameters for computation
 npar <- 200
-rr <- seq(0.2, 0.65, length.out = npar)
+rr <- seq(0.3, 0.7, length.out = npar)
 k <- 8
 
 # object to hold solutions across values of `rr`
@@ -135,16 +129,18 @@ for(i in 1:npar) {
     plot(1, type = 'n', axes = FALSE, xlim = c(-0.05, 0.64), ylim = 0:1)
     rasterImage(eqK, -0.05, 0, 0.05, 0.4)
     
-    plot(1, xlim = c(-0.055, 0.645), ylim = 0:1, axes = FALSE)
-    rasterImage(eqr, -0.04, 0.55, 0.018, 0.8)
+    plot(1, xlim = c(0.187, 0.695), ylim = 0:1, axes = FALSE)
+    rasterImage(eqr, 0.19 + 0.005, 0.55, 0.235 + 0.005, 0.8)
     
-    axis(1, at = (1:6) / 10, line = -1.5, tck = -0.2)
+    axis(1, at = pretty(rr), line = -1.5, tck = -0.2)
+    
     y0 <- par('usr')[3] + 1.5 * par('cin')[2] * par('cex') * par('lheight') * 
         diff(grconvertY(0:1, 'inches', 'user'))
     segments(x0 = min(rr), x1 = max(rr), y0 = y0, lwd = 5, col = 'gray90')
     segments(x0 = min(rr), x1 = rr[i], y0 = y0, lwd = 5, col = 'black')
     points(rr[i], y0, pch = 21, bg = 'gray', cex = 2, lwd = 2)
     
+    # abline(v = c(0.3, 0.7), col = 'blue')
     
     # the bifurcation plot
     par(mar = c(0.5, 4.5, 0.5, 0.5))
@@ -163,6 +159,9 @@ for(i in 1:npar) {
     lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 2, 1:2], lwd = 2)
     points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 2, 1:2, drop = FALSE], 
            pch = 16, cex = 2)
+    
+    # par(xpd = NA)
+    # abline(v = c(0.3, 0.7), col = 'red')
     
     dev.off()
 }
