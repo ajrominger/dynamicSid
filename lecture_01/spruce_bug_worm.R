@@ -48,10 +48,10 @@ bifurworms <- function(ninit, rinit, k) {
     
     s <- nleqslv::nleqslv(c(ninit, rinit), f)
     
-    return(s$x)
+    return(rev(s$x))
 }
 
-bifurworms(4, 0.466, k)
+
 
 # read in latex-generated eqs
 eqworms <- png::readPNG('lecture_01/worms_eq.png')
