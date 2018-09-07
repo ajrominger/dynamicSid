@@ -53,12 +53,12 @@ bifurworms <- function(rinit, ninit, k) {
 
 
 # read in latex-generated eqs
-eqworms <- png::readPNG('lecture_01/worms_eq.png')
-eqK <- png::readPNG('lecture_01/k.png')
-eqr <- png::readPNG('lecture_01/r.png')
+eqworms <- png::readPNG('lecture_01/budworm/worms_eq.png')
+eqK <- png::readPNG('lecture_01/budworm/k.png')
+eqr <- png::readPNG('lecture_01/budworm/r.png')
 
 # control parameters for computation
-npar <- 200
+npar <- 100
 rr <- seq(0.3, 0.7, length.out = npar)
 k <- 8
 
@@ -104,7 +104,8 @@ indexExpand <- function(i, j, imax, jmax) {
 pnts <- function(x, y, r, types) {
     if(length(x) > 0) {
         symbols(x, y, circles = r, inches = FALSE, add = TRUE, 
-                fg = c('black', 'transparent')[(types < -1) + 1], bg = c('black', 'white')[(types <= 0) + 1])
+                fg = c('black', 'transparent')[(types < -1) + 1], 
+                bg = c('black', 'white')[(types <= 0) + 1])
         
         if(any(types < -1)) {
             if(types[types < -1] == -2) {
@@ -112,7 +113,8 @@ pnts <- function(x, y, r, types) {
             } else if(types[types < -1] == -3) {
                 col <- c('black', 'white')
             }
-            plotrix::floating.pie(x[types < -1], y[types < -1], radius = r[types < -1], x = c(1, 1), 
+            plotrix::floating.pie(x[types < -1], y[types < -1], 
+                                  radius = r[types < -1], x = c(1, 1), 
                                   startpos = pi/2, col = col)
         }
     }
@@ -121,9 +123,10 @@ pnts <- function(x, y, r, types) {
 rscale <- 0.025 # the proportional radius of points
 nbifurfig <- 10
 
+# make folder to temporarily hold frames until processed into gif
+if(!file.exists('lecture_01/budworm/temp')) system('mkdir lecture_01/budworm/temp')
+
 for(i in 1:length(rr)) {
-# for(i in 137:142) {
-# for(i in 84:86) {
     # extract this solution
     thisNstar <- nstar[nstar[, 1] == rr[i], , drop = FALSE]
     sol <- thisNstar[, 2:3, drop = FALSE]
@@ -137,7 +140,8 @@ for(i in 1:length(rr)) {
     
     
     for(j in 1:nfig) {
-        png(paste0('lecture_01/temp/frame_', indexExpand(i, j, npar, nbifurfig), '.png'),
+        png(paste0('lecture_01/budworm/temp/frame_', indexExpand(i, j, npar, nbifurfig), 
+                   '.png'),
             width = 5.8, height = 4.8, units = 'in', res = 280)
         
         layout(matrix(c(1, 1, 2, 2, 3, 3, 4, 5, 0, 6, 6, 0), ncol = 2), 
@@ -163,8 +167,6 @@ for(i in 1:length(rr)) {
         pnts(sol$roots, dwormst1(sol$roots, rr[i], k), 
              r = rep(rscale * diff(par('usr')[1:2]), length(sol$roots)), 
              types = sol$types)
-        # points(sol$roots, dwormst1(sol$roots, rr[i], k), pch = c(16, 21)[(sol$types == -1) + 1], 
-        #        bg = 'white', cex = 2)
         
         # plot the whole diff eq
         curve(dworms(x, rr[i], k), from = 0, to = 8, xlab = '', ylab = '', 
@@ -175,8 +177,6 @@ for(i in 1:length(rr)) {
         pnts(sol$roots, dworms(sol$roots, rr[i], k), 
              r = rep(rscale * diff(par('usr')[1:2]), length(sol$roots)), 
              types = sol$types)
-        # points(sol$roots, dworms(sol$roots, rr[i], k), pch = c(16, 21)[(sol$types == -1) + 1], 
-        #        bg = 'white', cex = 2)
         
         mtext('Population size (N)', side = 1, line = 2.25, cex = 1.1)
         
@@ -197,8 +197,6 @@ for(i in 1:length(rr)) {
         segments(x0 = min(rr), x1 = rr[i], y0 = y0, lwd = 5, col = 'black')
         points(rr[i], y0, pch = 21, bg = 'gray', cex = 2, lwd = 2)
         
-        # abline(v = c(0.3, 0.7), col = 'blue')
-        
         # the bifurcation plot
         par(mar = c(0.5, 4.5, 0.5, 0.5))
         plot(nstar[, 1:2], type = 'n', xlab = '', ylab = '')
@@ -213,12 +211,10 @@ for(i in 1:length(rr)) {
              r = rep(rscale * diff(par('usr')[1:2]), nrow(thisNstar)),
              types = thisNstar[, 3])
         
-        # par(xpd = NA)
-        # abline(v = c(0.3, 0.7), col = 'red')
-        
         dev.off()
     }
 }
 
-## make gif using ImageMagick
-system('convert lecture_01/temp/*.png -delay 3 -loop 0 lecture_01/budworm_dynamics.gif')
+# make gif using ImageMagick and clean up temp files
+system('convert lecture_01/budworm/temp/*.png -delay 3 -loop 0 lecture_01/budworm/budworm_dynamics.gif')
+system('rm -r -f lecture_01/budworm/temp')
