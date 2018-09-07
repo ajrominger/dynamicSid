@@ -86,6 +86,10 @@ colnames(nstar) <- c('r', 'n', 'type', 'group')
 nstar <- rbind(nstar, c(bifur1, -2, 2), c(bifur2, -3, 1))
 nstar <- nstar[order(nstar[, 1]), ]
 
+# make animation go up then down the `rr` values
+rr <- c(rr, rev(rr))
+nstar <- cbind(nstar, nstar[nrow(nstar):1, ])
+
 # loop over values of `rr` plotting parts 1 and 2, the whole diff eq
 # and the bifurcation plot
 
@@ -178,7 +182,7 @@ for(i in 1:length(rr)) {
              r = rep(rscale * diff(par('usr')[1:2]), length(sol$roots)), 
              types = sol$types)
         
-        mtext('Population size (N)', side = 1, line = 2.25, cex = 1.1)
+        mtext('Population size (n)', side = 1, line = 2.25, cex = 1.1)
         
         # show the parameter values
         par(mar = c(0, 0, 0, 0.5))
@@ -201,7 +205,7 @@ for(i in 1:length(rr)) {
         par(mar = c(0.5, 4.5, 0.5, 0.5))
         plot(nstar[, 1:2], type = 'n', xlab = '', ylab = '')
         mtext('r', side = 1, line = 2.5, cex = 1.1)
-        mtext(expression(N^'*'), side = 2, line = 2.5, cex = 1.1)
+        mtext(expression(n^'*'), side = 2, line = 2.5, cex = 1.1)
         
         lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 1, 1:2], lwd = 2)
         lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 3, 1:2], lty = 3, lwd = 2)
