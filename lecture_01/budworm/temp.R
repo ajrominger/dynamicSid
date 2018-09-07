@@ -39,8 +39,9 @@ curve(dworms(x, rr[i], k), from = 0, to = 8, xlab = '', ylab = '',
       panel.first = abline(h = 0, col = 'gray'))
 axis(2, at = c(-0.4, 0, 0.4), cex.axis = 1.4)
 
-points(sol$roots, dworms(sol$roots, rr[i], k), pch = c(16, 21)[(sol$types == -1) + 1], 
-       bg = 'white', cex = 2)
+symbols(sol$roots, dworms(sol$roots, rr[i], k), circles = rep(r, length(sol$roots)), 
+        inches = FALSE, add = TRUE, 
+        fg = 'black', bg = c('black', 'white')[(sol$types == -1) + 1])
 
 mtext('Population size (N)', side = 1, line = 2.25, cex = 1.1)
 
@@ -61,6 +62,10 @@ segments(x0 = min(rr), x1 = max(rr), y0 = y0, lwd = 5, col = 'gray90')
 segments(x0 = min(rr), x1 = rr[i], y0 = y0, lwd = 5, col = 'black')
 points(rr[i], y0, pch = 21, bg = 'gray', cex = 2, lwd = 2)
 
+r <- rscale * diff(par('usr')[1:2])
+symbols(rr[i], y0, circles = r, inches = FALSE, add = TRUE, 
+        fg = 'black', bg = 'gray')
+
 # abline(v = c(0.3, 0.7), col = 'blue')
 
 # the bifurcation plot
@@ -70,16 +75,27 @@ mtext('r', side = 1, line = 2.5, cex = 1.1)
 mtext(expression(N^'*'), side = 2, line = 2.5, cex = 1.1)
 
 lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 1, 1:2], lwd = 2)
-points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 1, 1:2, drop = FALSE], 
-       pch = 16, cex = 2)
+# points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 1, 1:2, drop = FALSE], 
+#        pch = 16, cex = 2)
+
+r <- rscale * diff(par('usr')[1:2])
+symbols(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 1, 1:2, drop = FALSE], circles = r, 
+        inches = FALSE, add = TRUE, 
+        fg = 'black', bg = 'black')
 
 lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 3, 1:2], lty = 3, lwd = 2)
-points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 3, 1:2, drop = FALSE], 
-       pch = 21, bg = 'white', cex = 2)
+# points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 3, 1:2, drop = FALSE], 
+#        pch = 21, bg = 'white', cex = 2)
+symbols(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 3, 1:2, drop = FALSE], circles = r, 
+        inches = FALSE, add = TRUE, 
+        fg = 'black', bg = 'white')
 
 lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 2, 1:2], lwd = 2)
-points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 2, 1:2, drop = FALSE], 
-       pch = 16, cex = 2)
+# points(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 2, 1:2, drop = FALSE], 
+#        pch = 16, cex = 2)
+symbols(nstar[nstar[, 1] == rr[i] & nstar[, 4] == 2, 1:2, drop = FALSE], circles = r, 
+        inches = FALSE, add = TRUE, 
+        fg = 'black', bg = 'black')
 
 # par(xpd = NA)
 # abline(v = c(0.3, 0.7), col = 'red')
