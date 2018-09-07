@@ -203,7 +203,7 @@ for(i in 1:length(rr)) {
         
         # the bifurcation plot
         par(mar = c(0.5, 4.5, 0.5, 0.5))
-        plot(nstar[, 1:2], type = 'n', xlab = '', ylab = '')
+        plot(nstar[, 1:2], type = 'n', xlab = '', ylab = '', ylim = c(0, 8))
         mtext('r', side = 1, line = 2.5, cex = 1.1)
         mtext(expression(n^'*'), side = 2, line = 2.5, cex = 1.1)
         
