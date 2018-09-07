@@ -162,7 +162,7 @@ for(i in 1:length(rr)) {
         # plot the 2 eq parts
         par(mar = c(0.5, 2.5, 0.5, 2.5))
         
-        curve(dwormst1(x, rr[i], k), from = 0, to = 8, col = 'red', 
+        curve(dwormst1(x, rr[i], k), from = 0, to = 6.5, col = 'red', 
               xlab = '', ylab = '', ylim = c(0, 0.65), xaxt = 'n', yaxt = 'n', 
               lwd = 2)
         axis(2, at = (0:3) * 2/10, cex.axis = 1.4)
@@ -173,9 +173,10 @@ for(i in 1:length(rr)) {
              types = sol$types)
         
         # plot the whole diff eq
-        curve(dworms(x, rr[i], k), from = 0, to = 8, xlab = '', ylab = '', 
-              ylim = c(-0.5, 0.5), yaxt = 'n', lwd = 2, 
+        curve(dworms(x, rr[i], k), from = 0, to = 6.5, xlab = '', ylab = '', 
+              ylim = c(-0.5, 0.5), xaxt = 'n', yaxt = 'n', lwd = 2, 
               panel.first = abline(h = 0, col = 'gray'))
+        axis(1, at = 2*(0:3))
         axis(2, at = c(-0.4, 0, 0.4), cex.axis = 1.4)
         
         pnts(sol$roots, dworms(sol$roots, rr[i], k), 
@@ -203,13 +204,21 @@ for(i in 1:length(rr)) {
         
         # the bifurcation plot
         par(mar = c(0.5, 4.5, 0.5, 0.5))
-        plot(nstar[, 1:2], type = 'n', xlab = '', ylab = '', ylim = c(0, 8))
+        plot(nstar[, 1:2], type = 'n', xlab = '', ylab = '', ylim = c(0, 6.5), 
+             yaxt = 'n')
+        axis(2, at = 2*(0:3))
         mtext('r', side = 1, line = 2.5, cex = 1.1)
         mtext(expression(n^'*'), side = 2, line = 2.5, cex = 1.1)
         
-        lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 1, 1:2], lwd = 2)
-        lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 3, 1:2], lty = 3, lwd = 2)
-        lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 2, 1:2], lwd = 2)
+        if(i <= length(rr) / 2) {
+            lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 1, 1:2], lwd = 2)
+            lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 3, 1:2], lty = 3, lwd = 2)
+            lines(nstar[nstar[, 1] <= rr[i] & nstar[, 4] == 2, 1:2], lwd = 2)
+        } else {
+            lines(nstar[nstar[, 4] == 1, 1:2], lwd = 2)
+            lines(nstar[nstar[, 4] == 3, 1:2], lty = 3, lwd = 2)
+            lines(nstar[nstar[, 4] == 2, 1:2], lwd = 2)
+        }
         
         pnts(thisNstar[, 1], thisNstar[, 2],
              r = rep(rscale * diff(par('usr')[1:2]), nrow(thisNstar)),
