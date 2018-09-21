@@ -33,9 +33,18 @@ worms <- function(n0, r, k, t, dt) {
 
 tmax <- 50
 dt <- 0.01
-rr <- cumsum(rnorm(tmax / dt, 0, 0.01)) + 0.3
-plot(rr)
-foo <- worms(1, rr, 8, 50, 0.01)
+nt <- tmax / dt
+
+x <- seq(1, 0.25, length.out = nt)
+rr <- x + (-0.5 + 1 / (1 + exp(-rnorm(nt, 0, 1))))
+rr <- c(rep(0.6, nt / 2), rep(0.2, nt / 2)) + rnorm(nt, 0, 0.5)
+rr <- cumsum(rnorm(nt, 0, 0.01))
+
+k <- 8
+
+plot(rr, type = 'l')
+foo <- worms(6, rr, k, 50, 0.01)
 
 plot(foo, type = 'l')
 
+plot(rr, foo[-1])
