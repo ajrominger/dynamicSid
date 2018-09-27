@@ -69,13 +69,12 @@ for(i in 1:nframe) {
     
     curve(df(x, bb[i]), from = -2, to = 2, ylim = c(-1.5, 1.75), 
           panel.first = abline(h = 0, col = 'gray'), lwd = 2, 
-          xlab = 'x', ylab = 'f(x)', cex.lab = 1.4, yaxt = 'n')
+          xlab = 'x', ylab = expression(dot(x)), cex.lab = 1.4, yaxt = 'n')
     axis(2, at = c(-1, 0, 1))
     
     theseFP <- fp[fp[, 1] == bb[i], , drop = FALSE]
     
     addFixedPoints(theseFP[, 'x'], theseFP[, 'f'], theseFP[, 'type'])
-    # points(fp[fp[, 1] == bb[i], c('x', 'f'), drop = FALSE])
     dev.off()
 }
 
