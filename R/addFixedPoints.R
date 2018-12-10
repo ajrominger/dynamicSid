@@ -1,3 +1,16 @@
+#' @title Add fixed points
+#'  
+#' @description Add a fixed point to a plot
+#' 
+#' @details This function adds fixed points to a plt
+#' 
+#' @param x the x coordinates
+#' @param y the y coordinates
+#' @param types the types of fixed points
+#' @param r radius of the plotting character
+#' 
+#' @export
+
 addFixedPoints <- function(x, y, types, r = 1) {
     r <- r * rep(0.025 * diff(par('usr')[1:2]), length(x))
     
